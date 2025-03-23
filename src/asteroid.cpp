@@ -7,7 +7,9 @@ Asteroid::Asteroid() {
     active = false;
     speed = ASTEROID_SPEED;
     radius = ASTEROID_RADIUS;
-    rotation = ASTEROID_ROTATION_SPEED;
+    rotationSpeed = ASTEROID_ROTATION_SPEED;
+    rotationDirection = 1;
+    rotation = 0;
 }
 
 void Asteroid::Spawn(raylib::Vector2 playerPosition) {
@@ -15,11 +17,16 @@ void Asteroid::Spawn(raylib::Vector2 playerPosition) {
     float y = GetRandomValue(0, GetScreenHeight());
     float directionMargin = PLAYER_RADIUS*2+radius*2;
 
+    speed = GetRandomValue(ASTEROID_SPEED, ASTEROID_SPEED*3); // randomize speed
+    radius = GetRandomValue(ASTEROID_RADIUS, ASTEROID_RADIUS*2); // randomize size
+    rotationSpeed = GetRandomValue(ASTEROID_ROTATION_SPEED, ASTEROID_ROTATION_SPEED*4); // randomize rotation speed
+    rotationDirection = GetRandomValue(0, 1) == 0 ? -1 : 1; // randomize rotation direction
+
+
     position = raylib::Vector2{float(GetScreenWidth()) + ASTEROID_MARGIN, y};
     // randomize direction of asteroid to player position
     direction = (playerPosition - position)+raylib::Vector2{0, GetRandomValue(-directionMargin, directionMargin)};
     direction = (direction).Normalize();
-    speed = GetRandomValue(ASTEROID_SPEED, ASTEROID_SPEED*3); // randomize speed
     velocity = direction * speed;
 }
 
@@ -27,8 +34,9 @@ void Asteroid::Move() {
     if (!active) return;
 
     position += velocity;
-    rotation += GetRandomValue(ASTEROID_ROTATION_SPEED, ASTEROID_ROTATION_SPEED*3);
-    if (rotation > 360) rotation -= 360;
+    rotation += rotationSpeed*rotationDirection;
+    if (rotation < 0 && rotationDirection ==-1) rotation += 360;
+    if (rotation > 360 && rotationDirection == 1) rotation -= 360;
 
     if (position.x < -40 || position.x > GetScreenWidth()+40 ||
         position.y < -40 || position.y > GetScreenHeight()+40) {

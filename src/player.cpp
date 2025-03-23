@@ -16,19 +16,20 @@ Player::Player() {
 
 void Player::Move() {
     if (!active) return;
-    if (IsKeyDown(KEY_D)) {
-        position.x += speed;
-    }
-    if (IsKeyDown(KEY_A)) {
-        position.x -= speed;
-    }
-    if (IsKeyDown(KEY_W)) {
-        position.y -= speed;
-    }
-    if (IsKeyDown(KEY_S)) {
-        position.y += speed;
-    }
+
+    raylib::Vector2 inputDir = {0, 0};
+
+    if (IsKeyDown(KEY_D)) inputDir.x += 1;
+    if (IsKeyDown(KEY_A)) inputDir.x -= 1;
+    if (IsKeyDown(KEY_S)) inputDir.y += 1;
+    if (IsKeyDown(KEY_W)) inputDir.y -= 1;
+
+    if (inputDir.Length() > 0.0f)
+        inputDir = inputDir.Normalize();
+
+    position += inputDir * speed;
 }
+
 
 void Player::Shoot(std::vector<Bullet>& bullets) {
     if (!active) return;
