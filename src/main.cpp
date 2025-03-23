@@ -1,5 +1,6 @@
 #include "raylib-cpp.hpp"
 #include "Config.hpp"
+#include "Physics.hpp"
 #include "Bullet.hpp"
 #include "Asteroid.hpp"
 #include "Player.hpp"
@@ -13,6 +14,8 @@ int main() {
 
     raylib::Color textColor(LIGHTGRAY);
     raylib::Window window(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
+
+    Physics physics;
 
     Player player;
     raylib::Vector2 playerPosition(screenWidth / 2, screenHeight / 2);
@@ -39,7 +42,9 @@ int main() {
         player.Move();
         player.Shoot(bullets);
 
-
+        // Physics
+        physics.HandleAsteroidCollision(asteroids);
+        
         // Update
         for (auto& bullet : bullets) {
             bullet.Update();

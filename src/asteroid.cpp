@@ -40,6 +40,7 @@ bool Asteroid::CheckCollision(raylib::Vector2 bulletPosition, float bulletRadius
     return false;
 }
 
+
 void Asteroid::Draw() {
     if (!active) return;
     DrawCircleV(position, radius, MAROON);
