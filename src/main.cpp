@@ -1,3 +1,4 @@
+#include "resource_dir.h"
 #include "raylib-cpp.hpp"
 #include "Config.hpp"
 #include "Physics.hpp"
@@ -5,6 +6,7 @@
 #include "Asteroid.hpp"
 #include "Player.hpp"
 #include <vector>
+#include "TextureManager.hpp"
 
 int main() {
     
@@ -14,6 +16,10 @@ int main() {
 
     raylib::Color textColor(LIGHTGRAY);
     raylib::Window window(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
+    window.SetConfigFlags(FLAG_VSYNC_HINT | FLAG_MSAA_4X_HINT | FLAG_WINDOW_RESIZABLE | FLAG_WINDOW_HIGHDPI);
+
+    TextureManager textureManager;
+    textureManager.LoadGameTextures();
 
     Physics physics;
 
@@ -44,7 +50,7 @@ int main() {
 
         // Physics
         physics.HandleAsteroidCollision(asteroids);
-        
+
         // Update
         for (auto& bullet : bullets) {
             bullet.Update();
@@ -57,7 +63,7 @@ int main() {
         }
         
         for (auto& asteroid : asteroids) {
-            asteroid.Update();
+            asteroid.Move();
         }
         
         
@@ -86,13 +92,6 @@ int main() {
             asteroids.push_back(newAsteroid);
         }
         
-
-    
-
-
-
-
-
         // Draw
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -114,6 +113,7 @@ int main() {
         EndDrawing();
     }
 
+    textureManager.UnloadGameTexture();
     return 0;
 }
 

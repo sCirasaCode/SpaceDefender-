@@ -1,6 +1,7 @@
-#include "Asteroid.hpp"
-#include "raylib-cpp.hpp"
 #include "Config.hpp"
+#include "raylib-cpp.hpp"
+#include "Asteroid.hpp"
+#include "TextureManager.hpp"
 
 Asteroid::Asteroid() {
     active = false;
@@ -20,7 +21,7 @@ void Asteroid::Spawn(raylib::Vector2 playerPosition) {
     velocity = direction * speed;
 }
 
-void Asteroid::Update() {
+void Asteroid::Move() {
     if (!active) return;
 
     position += velocity;
@@ -43,7 +44,12 @@ bool Asteroid::CheckCollision(raylib::Vector2 bulletPosition, float bulletRadius
 
 void Asteroid::Draw() {
     if (!active) return;
-    DrawCircleV(position, radius, MAROON);
+    DrawTexturePro( TextureManager::asteroidTexture,
+        (Rectangle){ 0, 0, TextureManager::asteroidTexture.width, TextureManager::asteroidTexture.height }, 
+        (Rectangle){ position.x, position.y, radius*2, radius*2 }, 
+        (Vector2){ radius, radius }, 
+        0.0f, 
+        WHITE);
 }
 
 // ================================================================== //
