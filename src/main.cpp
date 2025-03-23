@@ -1,12 +1,14 @@
 #include "resource_dir.h"
 #include "raylib-cpp.hpp"
 #include "Config.hpp"
+#include "TextureManager.hpp"
+#include "Parallax.hpp"
 #include "Physics.hpp"
 #include "Bullet.hpp"
 #include "Asteroid.hpp"
 #include "Player.hpp"
 #include <vector>
-#include "TextureManager.hpp"
+
 
 int main() {
     
@@ -20,6 +22,8 @@ int main() {
 
     TextureManager textureManager;
     textureManager.LoadGameTextures();
+
+    Parallax parallax;
 
     Physics physics;
 
@@ -66,7 +70,7 @@ int main() {
             asteroid.Move();
         }
         
-        
+        // Check for hits and spawn new asteroids
         bool asteroidShot = false;
         for (auto& bullet : bullets) {
             if (!bullet.IsActive()) continue;
@@ -94,7 +98,7 @@ int main() {
         
         // Draw
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        parallax.Update();
 
         player.Draw();
 

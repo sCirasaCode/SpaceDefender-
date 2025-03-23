@@ -3,19 +3,16 @@
 #include "Config.hpp"
 #include "Bullet.hpp"
 #include <vector>
+#include "TextureManager.hpp"
 
 Player::Player() {
     active = true;
     position = raylib::Vector2{GetScreenWidth()/2, GetScreenHeight()/2};
     speed = PLAYER_SPEED;
     radius = PLAYER_RADIUS;
+    rotation = 90.0f; // rotation to adjust Texture to the right direction
 }
 
-
-void Player::Draw() {
-    if (!active) return;
-    DrawCircleV(position, radius, BLUE);
-}
 
 void Player::Move() {
     if (!active) return;
@@ -54,6 +51,16 @@ bool Player::CheckCollision(raylib::Vector2 asteroidPosition, float asteroidRadi
     return false;
 }
 
+void Player::Draw() {
+    if (!active) return;
+    DrawTexturePro( TextureManager::playerTexture,
+        (Rectangle){ 0, 0, TextureManager::playerTexture.width, TextureManager::playerTexture.height }, 
+        (Rectangle){ position.x, position.y, radius*2, radius*2 }, 
+        (Vector2){ radius, radius }, 
+        rotation, 
+        WHITE);
+}
+
 // ================================================================== //
 //                      Getter and Setter Methods                     //
 // ================================================================== //
@@ -63,7 +70,6 @@ bool Player::IsActive() const{
 }
 
 void Player::Deactivate(bool active) {
-    // false = activate, true = deactivate
     this->active = active;
 }
 

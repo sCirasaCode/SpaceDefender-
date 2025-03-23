@@ -19,13 +19,13 @@ void Physics::HandleAsteroidCollision(std::vector<Asteroid>& asteroids) {
 
                 normal = normal.Normalize();
 
-                float repulsionForce = 1.0f;
+                float repulsionForce = 0.6f;
                 
                 // Push them apart
                 asteroids[i].velocity -= normal * repulsionForce;
                 asteroids[j].velocity += normal * repulsionForce;
                 
-                float overlap = (asteroids[i].radius * 2 - distance) / 2.0f;
+                float overlap = (asteroids[i].radius * 2 - distance-1.0f) / 2.0f;
                 // Reposition them so they don't overlap
                 asteroids[i].position -= normal * overlap;
                 asteroids[j].position += normal * overlap;

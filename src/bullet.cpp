@@ -13,6 +13,7 @@ void Bullet::Fire(raylib::Vector2 position) {
     raylib::Vector2 direction = raylib::Vector2(1, 0);
 
     this->position = position;
+    this->position.x = position.x + PLAYER_RADIUS; // offset to the tip of the player
     velocity = direction * speed;
 }
 
@@ -40,7 +41,6 @@ bool Bullet::IsActive() const{
 }
 
 void Bullet::Deactivate() {
-    // false = activate, true = deactivate
     active = false;
 }
 
