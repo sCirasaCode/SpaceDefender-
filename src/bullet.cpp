@@ -39,9 +39,9 @@ bool Bullet::IsActive() const{
     return active;
 }
 
-void Bullet::Deactivate(bool active) {
+void Bullet::Deactivate() {
     // false = activate, true = deactivate
-    this->active = active;
+    active = false;
 }
 
 raylib::Vector2 Bullet::GetPosition() const{

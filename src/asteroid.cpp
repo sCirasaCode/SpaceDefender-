@@ -10,17 +10,20 @@ Asteroid::Asteroid() {
 
 void Asteroid::Spawn(raylib::Vector2 playerPosition) {
     active = true;
-    position = raylib::Vector2{GetScreenWidth()+ASTEROID_MARGIN, GetScreenHeight()/2};
-    direction = playerPosition - position;
+    float y = GetRandomValue(0, GetScreenHeight());
+    float directionMargin = PLAYER_RADIUS*2+radius*2;
+
+    position = raylib::Vector2{float(GetScreenWidth()) + ASTEROID_MARGIN, y};
+    // randomize direction of asteroid to player position
+    direction = (playerPosition - position)+raylib::Vector2{0, GetRandomValue(-directionMargin, directionMargin)};
+    direction = (direction).Normalize();
+    velocity = direction * speed;
 }
 
 void Asteroid::Update() {
     if (!active) return;
-    
-    direction = raylib::Vector2(direction).Normalize();
-    velocity = direction * speed;
+
     position += velocity;
-    active = true;
 
     if (position.x < -40 || position.x > GetScreenWidth()+40 ||
         position.y < -40 || position.y > GetScreenHeight()+40) {
@@ -49,9 +52,9 @@ bool Asteroid::IsActive() const{
     return active;
 }
 
-void Asteroid::Deactivate(bool active) {
+void Asteroid::Deactivate() {
     // false = activate, true = deactivate
-    this->active = active;
+    active = false;
 }
 
 raylib::Vector2 Asteroid::GetPosition() const{

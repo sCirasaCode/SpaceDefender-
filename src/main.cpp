@@ -2,29 +2,30 @@
 #include "Config.hpp"
 #include "Bullet.hpp"
 #include "Asteroid.hpp"
+#include "Player.hpp"
 #include <vector>
 
 int main() {
     
     // Initialization
-    int screenWidth = 800;
-    int screenHeight = 450;
+    int screenWidth = SCREEN_WIDTH;
+    int screenHeight = SCREEN_HEIGHT;
 
     raylib::Color textColor(LIGHTGRAY);
     raylib::Window window(screenWidth, screenHeight, "Raylib C++ Starter Kit Example");
 
+    Player player;
     raylib::Vector2 playerPosition(screenWidth / 2, screenHeight / 2);
-    float playerSpeed = 2.0f;
 
     std::vector<Bullet> bullets;
-    const int maxBullets = 20;
+    int maxBullets = 20;
     for (int i = 0; i < maxBullets; i++) {
         bullets.emplace_back(playerPosition, raylib::Vector2(0, 0));
     }
 
     std::vector<Asteroid> asteroids;
-    const int maxAsteroids = 1;
-    for (int i = 0; i < maxAsteroids; i++) {
+
+    for (int i = 0; i < 1; i++) {
         asteroids.emplace_back();
     }
     
@@ -33,39 +34,57 @@ int main() {
     // Main game loop
     while (!window.ShouldClose()) // Detect window close button or ESC key
     {
-        // Update
-        if (IsKeyPressed(KEY_SPACE)) {
-            for (auto& bullet : bullets) {
-                if (!bullet.IsActive()) {
-                    bullet.Fire(playerPosition);
-                    break;
-                }
-            }
-        }
 
+        // Input
+        player.Move();
+        player.Shoot(bullets);
+
+
+        // Update
         for (auto& bullet : bullets) {
             bullet.Update();
         }
 
         for (auto& asteroid : asteroids) {
             if (!asteroid.IsActive()) {
-                asteroid.Spawn(playerPosition);
+                asteroid.Spawn(player.GetPosition());
             }
         }
-
+        
         for (auto& asteroid : asteroids) {
             asteroid.Update();
         }
-
+        
+        
+        bool asteroidShot = false;
         for (auto& bullet : bullets) {
+            if (!bullet.IsActive()) continue;
+
             for (auto& asteroid : asteroids) {
-                if (asteroid.IsActive() && bullet.IsActive() &&
-                    asteroid.CheckCollision(bullet.GetPosition(), BULLET_RADIUS)) {
-                    bullet.Deactivate(true);
-                    asteroid.Deactivate(true);
+                if (!asteroid.IsActive()) continue;
+
+                if (asteroid.CheckCollision(bullet.GetPosition(), BULLET_RADIUS)) {
+                    bullet.Deactivate();
+                    asteroid.Deactivate();
+
+                    asteroidShot = true;
+                    break; // stop checking more asteroids for this bullet
                 }
             }
+
+            if (asteroidShot) break; // stop after one collision
         }
+
+        if (asteroids.size() < MAX_ASTEROIDS && asteroidShot) { // spawn cap at MAX_ASTEROIDS
+            Asteroid newAsteroid;
+            newAsteroid.Spawn(player.GetPosition());
+            asteroids.push_back(newAsteroid);
+        }
+        
+
+    
+
+
 
 
 
@@ -73,7 +92,7 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        DrawCircleV(playerPosition, 20, MAROON);
+        player.Draw();
 
         for (auto& bullet : bullets) {
             if (bullet.IsActive()) {
@@ -92,3 +111,4 @@ int main() {
 
     return 0;
 }
+
