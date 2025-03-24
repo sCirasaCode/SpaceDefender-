@@ -7,6 +7,7 @@
 #include "Bullet.hpp"
 #include "Asteroid.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 #include <vector>
 
 
@@ -36,8 +37,12 @@ int main() {
         bullets.emplace_back(playerPosition, raylib::Vector2(0, 0));
     }
 
-    std::vector<Asteroid> asteroids;
+    std::vector<Enemy> enemies;
+    for (int i = 0; i < 1; i++) {
+        enemies.emplace_back();
+    }
 
+    std::vector<Asteroid> asteroids;
     for (int i = 0; i < 1; i++) {
         asteroids.emplace_back();
     }
@@ -65,11 +70,20 @@ int main() {
                 asteroid.Spawn(player.GetPosition());
             }
         }
-        
+
         for (auto& asteroid : asteroids) {
             asteroid.Move();
         }
-        
+
+        for (auto& enemy : enemies) {
+            if (!enemy.IsActive())
+            enemy.Spawn();
+        }
+
+        for (auto& enemy : enemies) {
+            enemy.Move();
+        }
+
         // Check for hits and spawn new asteroids
         bool asteroidShot = false;
         for (auto& bullet : bullets) {
@@ -98,6 +112,7 @@ int main() {
         
         // Draw
         BeginDrawing();
+
         parallax.Update();
 
         player.Draw();
@@ -106,6 +121,10 @@ int main() {
             if (bullet.IsActive()) {
                 bullet.Draw();
             }
+        }
+
+        for (auto& enemy : enemies) {
+            enemy.Draw();
         }
 
         for (auto& asteroid : asteroids) {
