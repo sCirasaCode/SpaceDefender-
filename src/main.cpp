@@ -31,15 +31,21 @@ int main() {
     Player player;
     raylib::Vector2 playerPosition(screenWidth / 2, screenHeight / 2);
 
-    std::vector<Bullet> bullets;
+    std::vector<Bullet> playerBullets;
     int maxBullets = 20;
     for (int i = 0; i < maxBullets; i++) {
-        bullets.emplace_back(playerPosition, raylib::Vector2(0, 0));
+        playerBullets.emplace_back();
     }
 
     std::vector<Enemy> enemies;
     for (int i = 0; i < 1; i++) {
         enemies.emplace_back();
+    }
+
+    std::vector<Bullet> enemyBullets;
+    int maxEnemyBullets = 20;
+    for (int i = 0; i < maxEnemyBullets; i++) {
+        enemyBullets.emplace_back();
     }
 
     std::vector<Asteroid> asteroids;
@@ -55,13 +61,17 @@ int main() {
 
         // Input
         player.Move();
-        player.Shoot(bullets);
+        player.Shoot(playerBullets);
 
         // Physics
         physics.HandleAsteroidCollision(asteroids);
 
         // Update
-        for (auto& bullet : bullets) {
+        for (auto& bullet : playerBullets) {
+            bullet.Update();
+        }
+
+        for (auto& bullet : enemyBullets) {
             bullet.Update();
         }
 
@@ -86,7 +96,7 @@ int main() {
 
         // Check for hits and spawn new asteroids
         bool asteroidShot = false;
-        for (auto& bullet : bullets) {
+        for (auto& bullet : playerBullets) {
             if (!bullet.IsActive()) continue;
 
             for (auto& asteroid : asteroids) {
@@ -109,6 +119,39 @@ int main() {
             newAsteroid.Spawn(player.GetPosition());
             asteroids.push_back(newAsteroid);
         }
+
+        for (auto& enemy : enemies) {
+            if (!enemy.IsActive()) continue;
+
+            for (auto& bullet : playerBullets) {
+                if (!bullet.IsActive()) continue;
+
+                if (enemy.CheckCollision(bullet.GetPosition(), BULLET_RADIUS)) {
+                    bullet.Deactivate();
+                    enemy.Deactivate();
+                    player.increaseScore(10);
+                    break; // stop checking more enemies for this bullet
+                }
+            }
+        }
+
+        for (auto& enemy : enemies) {
+            enemy.Shoot(enemyBullets);
+        }
+
+        for (auto& enemy : enemies) {
+            if (!enemy.IsActive()) continue;
+
+            for (auto& bullet : enemyBullets) {
+                if (!bullet.IsActive()) continue;
+
+                if (player.CheckCollision(bullet.GetPosition(), BULLET_RADIUS)) {
+                    bullet.Deactivate();
+                    player.DecreaseHealth(10);
+                    break; // stop checking more enemies for this bullet
+                }
+            }
+        }
         
         // Draw
         BeginDrawing();
@@ -117,7 +160,16 @@ int main() {
 
         player.Draw();
 
-        for (auto& bullet : bullets) {
+        raylib::DrawText("Score: " + std::to_string(player.GetScore()), 20, 10, 20, textColor);
+        raylib::DrawText("Health: " + std::to_string(player.GetHealth()), 20, 30, 20, textColor);
+
+        for (auto& bullet : playerBullets) {
+            if (bullet.IsActive()) {
+                bullet.Draw();
+            }
+        }
+
+        for (auto& bullet : enemyBullets) {
             if (bullet.IsActive()) {
                 bullet.Draw();
             }

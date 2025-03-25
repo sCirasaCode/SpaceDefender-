@@ -2,18 +2,17 @@
 #include "raylib-cpp.hpp"
 #include "Config.hpp"
 
-Bullet::Bullet(raylib::Vector2 position, raylib::Vector2 velocity) {
+Bullet::Bullet() {
     active = false;
     speed = BULLET_SPEED;
     radius = BULLET_RADIUS;
 }
 
-void Bullet::Fire(raylib::Vector2 position) {
-    active = true;
-    raylib::Vector2 direction = raylib::Vector2(1, 0);
 
-    this->position = position;
-    this->position.x = position.x + PLAYER_RADIUS; // offset to the tip of the player
+void Bullet::Fire(raylib::Vector2 position, raylib::Vector2 direction, raylib::Vector2 offset) {
+    active = true;
+    
+    this->position = position + offset;
     velocity = direction * speed;
 }
 

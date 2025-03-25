@@ -13,6 +13,8 @@ Player::Player() {
     acceleration = raylib::Vector2{0, 0};
     accelerationRate = PLAYER_ACCELERATION_RATE;
     rotation = 90.0f; // rotation to adjust Texture to the right direction
+    score = 0;
+    health = 100;
 }
 
 
@@ -31,7 +33,6 @@ void Player::Move() {
     position += velocity;
     position.x = Clamp(position.x, 0.0f+radius, SCREEN_WIDTH  - radius-10);
     position.y = Clamp(position.y, 0.0f+radius, SCREEN_HEIGHT - radius-10);
-    
 }
 
 raylib::Vector2 Player::CalcVelocity(raylib::Vector2 velocity, raylib::Vector2 acceleration) const {
@@ -53,17 +54,25 @@ void Player::Shoot(std::vector<Bullet>& bullets) {
     if (IsKeyPressed(KEY_SPACE)) {
         for (auto& bullet : bullets) {
             if (!bullet.IsActive()) {
-                bullet.Fire(position);
+                bullet.Fire(position, raylib::Vector2{1, 0}, raylib::Vector2{radius, 0});
                 break;
             }
         }
     }
 }
 
-bool Player::CheckCollision(raylib::Vector2 asteroidPosition, float asteroidRadius) {
+void Player::DecreaseHealth(int damage) {
+    health -= damage;
+}
+
+void Player::increaseScore(int score) {
+    this->score += score;
+}
+
+bool Player::CheckCollision(raylib::Vector2 objectPosition, float objectRadius) {
     if (!active) return false;
 
-    if (CheckCollisionCircles(position, radius, asteroidPosition, asteroidRadius)) {
+    if (CheckCollisionCircles(position, radius, objectPosition, objectRadius)) {
         return true;
     }
     return false;
@@ -93,5 +102,13 @@ void Player::Deactivate(bool active) {
 
 raylib::Vector2 Player::GetPosition() const{
     return position;
+}
+
+int Player::GetScore() const {
+    return score;
+}   
+
+int Player::GetHealth() const {
+    return health;
 }
 

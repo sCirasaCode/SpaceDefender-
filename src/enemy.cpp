@@ -29,6 +29,18 @@ void Enemy::Move() {
     }
 }
 
+void Enemy::Shoot(std::vector<Bullet>& bullets) {
+    if (!active) return;
+    if (GetRandomValue(0, 300) < 2) {
+        for (auto& bullet : bullets) {
+            if (!bullet.IsActive()) {
+                bullet.Fire(position, raylib::Vector2{-1, 0}, raylib::Vector2{-radius, 0});
+                break;
+            }
+        }
+    }
+}
+
 bool Enemy::CheckCollision(raylib::Vector2 bulletPosition, float bulletRadius) {
     if (!active) return false;
 
