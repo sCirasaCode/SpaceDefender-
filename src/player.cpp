@@ -54,7 +54,7 @@ void Player::Shoot(std::vector<Bullet>& bullets) {
     if (IsKeyPressed(KEY_SPACE)) {
         for (auto& bullet : bullets) {
             if (!bullet.IsActive()) {
-                bullet.Fire(position, raylib::Vector2{1, 0}, raylib::Vector2{radius, 0});
+                bullet.Fire(position, raylib::Vector2{1, 0}, raylib::Vector2{radius, 0}, BULLET_SPEED*1.3);
                 break;
             }
         }

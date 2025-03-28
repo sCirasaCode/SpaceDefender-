@@ -58,16 +58,18 @@ void Enemy::Shoot(std::vector<Bullet>& bullets, raylib::Vector2 playerPosition) 
 
     int shootChance = 0;
 
-    if (playerPosition.y - position.y < abs(50)) {
-        shootChance = GetRandomValue(0, 50);
+    if (playerPosition.y - position.y < abs(20)) {
+        shootChance = GetRandomValue(0, 100);
+    } else if (playerPosition.y - position.y < abs(100)) {
+        shootChance = GetRandomValue(0, 400);
     } else {
-        shootChance = GetRandomValue(0, 600);
+        shootChance = GetRandomValue(0, 800);
     }
 
     if (shootChance < 2) {
         for (auto& bullet : bullets) {
             if (!bullet.IsActive()) {
-                bullet.Fire(position, raylib::Vector2{-1, 0}, raylib::Vector2{-radius, 0});
+                bullet.Fire(position, raylib::Vector2{-1, 0}, raylib::Vector2{-radius, 0}, BULLET_SPEED);
                 break;
             }
         }

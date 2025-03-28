@@ -30,6 +30,10 @@ void Asteroid::Spawn(raylib::Vector2 playerPosition) {
     velocity = direction * speed;
 }
 
+void Asteroid::CooldownMax() {
+    active = false;
+}
+
 void Asteroid::Move() {
     if (!active) return;
 

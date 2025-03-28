@@ -53,7 +53,7 @@ int main() {
         asteroids.emplace_back();
     }
     
-    SetTargetFPS(60);
+    SetTargetFPS(FRAME_RATE);
 
     // Main game loop
     while (!window.ShouldClose()) // Detect window close button or ESC key

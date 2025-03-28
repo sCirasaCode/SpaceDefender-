@@ -4,15 +4,15 @@
 
 Bullet::Bullet() {
     active = false;
-    speed = BULLET_SPEED;
     radius = BULLET_RADIUS;
 }
 
 
-void Bullet::Fire(raylib::Vector2 position, raylib::Vector2 direction, raylib::Vector2 offset) {
+void Bullet::Fire(raylib::Vector2 position, raylib::Vector2 direction, raylib::Vector2 offset, float speed) {
     active = true;
     
     this->position = position + offset;
+    this->speed = speed;
     velocity = direction * speed;
 }
 
