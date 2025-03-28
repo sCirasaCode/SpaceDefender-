@@ -136,7 +136,7 @@ int main() {
         }
 
         for (auto& enemy : enemies) {
-            enemy.Shoot(enemyBullets);
+            enemy.Shoot(enemyBullets, player.GetPosition());
         }
 
         for (auto& enemy : enemies) {
